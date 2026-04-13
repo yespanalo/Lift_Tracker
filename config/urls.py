@@ -22,4 +22,6 @@ urlpatterns = [
     path('api/users/',include('apps.users.urls')),
     path('api/exercise/',include('apps.exercise.urls')),
     path('api/workout/',include('apps.workouts.urls')),
+    path('api/set/',include('apps.sets.urls')),
+    
 ]
