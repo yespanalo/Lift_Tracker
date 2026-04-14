@@ -6,13 +6,16 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.db import transaction
 
-@api_view(['GET'])
+@api_view(['GET','POST'])
 @permission_classes([IsAuthenticated])
 def get_workouts(request):
     try:
         date_filter = request.GET.get('workout_date',None)
+        workout_id = request.data.get('workout_id',None)
         workouts = Workout.objects.filter(user=request.user).prefetch_related('workout_exercises__exercise',
         'workout_exercises__sets')
+        if workout_id:
+            workouts = workouts.filter(workout_id=workout_id)
         if date_filter:
             workouts = workouts.filter(workout_date=date_filter)
         serializer = WorkoutSerializer(workouts, many = True)
@@ -25,7 +28,7 @@ def get_workouts(request):
 def create_workout(request):
     try:
         serializer = WorkoutSerializer(data = request.data)
-        if serializer.is_valid():
+        if serializer.is_valid():   
             serializer.save(user = request.user)
             return Response({"success":True,"data":serializer.data})
     except Exception as e:
