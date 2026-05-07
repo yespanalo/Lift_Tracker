@@ -4,8 +4,9 @@ from ..sets.serializers import SetsSerializer
 
 class WorkoutExerciseSerializer(serializers.ModelSerializer):
     exercise_name = serializers.CharField(source='exercise.name')
+    muscle_group = serializers.CharField(source='exercise.muscle_group')
     sets = SetsSerializer(many=True,read_only=True)
 
     class Meta:
         model = Workout_Exercises
-        fields = ['workout_exercise_id', 'exercise', 'exercise_name','sets']
+        fields = ['workout_exercise_id', 'exercise', 'exercise_name','muscle_group','sets']

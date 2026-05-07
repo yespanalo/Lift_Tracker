@@ -38,4 +38,60 @@ def get_users(request):
     user = CustomUser.objects.all()
     serializer = CustomUserSerializer(user,many = True)
     return Response({"success":True,"message":serializer.data})
+
+from datetime import datetime, timedelta
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+@api_view(['POST'])
+def format_json(request):
+    start_time = request.data.get('start_time')
+    end_time = request.data.get('end_time')
+
+    includes = request.data.get('includes')
+    excludes = request.data.get('excludes')
+
+    # Validate required fields
+    if not start_time or not end_time:
+        return Response(
+            {"error": "start_time and end_time are required"},
+            status=400
+        )
+
+    # Default to empty lists if not provided
+    if includes is None:
+        includes = []
+
+    if excludes is None:
+        excludes = []
+
+    result = {
+        "start_time": start_time,
+        "end_time": end_time,
+        "includes": includes,
+        "excludes": excludes
+    }
+
+    return Response(result)
+
+@api_view(['POST'])
+def create_config(request):
+    duration_seconds = request.data.get('duration_seconds')
+    lead_time_seconds = request.data.get('lead_time_seconds')
+    requires_approval = request.data.get('requires_approval')
+    interval_mmCss_csv = request.data.get('interval_mmCss_csv')
     
+    if not duration_seconds or not lead_time_seconds or not interval_mmCss_csv:
+        return Response({"error":"duration_seconds,lead_time_seconds and interval_mmCss_csv are required"})
+    
+    result = {
+        "duration_seconds":duration_seconds,
+        "lead_time_seconds":lead_time_seconds,
+        "requires_approval":requires_approval,
+        "interval_mmCss_csv":interval_mmCss_csv
+    }
+    
+    return Response(result)
